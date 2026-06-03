@@ -23,7 +23,7 @@ jobs:
 
     - name: 4. Dong goi phan mem bang PyInstaller
       run: |
-        pyinstaller --onedir --windowed --add-data "logo.png:." --name="KICODE" kicode.py
+        pyinstaller --onefile --windowed --add-data "logo.png:." --name="KICODE" kicode.py
 
     - name: 5. Nen thu muc KICODE.app thanh file .ZIP
       run: |
