@@ -1,0 +1,39 @@
+name: Build KICODE for macOS
+
+on:
+  push:
+    branches: [ "main", "master" ] # Tự động chạy khi bạn tải file lên nhánh main hoặc master
+  workflow_dispatch: # Tạo thêm nút bấm để bạn có thể tự bấm chạy thủ công bất cứ lúc nào
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+    - name: 1. Lay ma nguon tu Github ve máy ao
+      uses: actions/checkout@v3
+
+    - name: 2. Cai dat moi truong Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: 3. Cai dat cac thu vien can thiet
+      run: |
+        pip install requests cryptography pyinstaller
+
+    - name: 4. Dong goi phan mem bang PyInstaller
+      run: |
+        # Đóng gói trên macOS dùng dấu hai chấm (:) thay vì dấu chấm phẩy (;)
+        # Thêm cờ --windowed để phần mềm không bị hiện cửa sổ Terminal đen khi học viên mở trên Mac
+        pyinstaller --onedir --windowed --add-data "logo.png:." --name="KICODE" kicode.py
+
+    - name: 5. Nen thu muc KICODE.app thanh file .ZIP
+      run: |
+        cd dist
+        zip -r KICODE_macOS.zip KICODE.app
+
+    - name: 6. Day file zip len thanh qua (Artifact)
+      uses: actions/upload-artifact@v3
+      with:
+        name: KICODE_Mac_Installer
+        path: dist/KICODE_macOS.zip
